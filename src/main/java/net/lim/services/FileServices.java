@@ -1,43 +1,39 @@
 package net.lim.services;
 
+import net.lim.LServer;
+import org.json.simple.JSONObject;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("/files")
 public class FileServices {
-    //TODO read ftp.conf configuration
 
     @GET
-    @Path("/host")
-    public String getFTPServerHost() {
-        return "localhost";
-    }
+    @Path("/serverInfo")
+    public Response getFTPServerInfo() {
 
-    @GET
-    @Path("/port")
-    public int getFTPServerPort() {
-        return 22;
-    }
-
-    @GET
-    @Path("/ftpuser")
-    public String getFTPUser() {
-        return "lserver";
+        return Response.ok(LServer.fileGetter.getFTPServerInfoJSON().toJSONString(), MediaType.APPLICATION_JSON).build();
     }
 
     @GET
     @Path("/ignoredDirs")
-    public String getIgnoredDirs() {
+    public Response getIgnoredDirs() {
         //TODO return ignored dirs to check separated with \n
-        return null;
+        return Response.ok().build();
     }
 
     @GET
-    @Path("/hashforfile")
-    public long getHashForFile(@QueryParam("fileName") String fileName) {
-        //TODO get md5 from ftp server
-        return 0;
+    @Path("/hash")
+    public Response getHashInfo() {
+        if (!LServer.fileGetter.isReady()) {
+            return Response.serverError().entity("Server not ready").build();
+        }
+        return Response.ok(LServer.fileGetter.getFullHashInfoJSON().toJSONString(), MediaType.APPLICATION_JSON).build();
     }
-
 }

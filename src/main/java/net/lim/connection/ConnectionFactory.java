@@ -1,5 +1,7 @@
 package net.lim.connection;
 
+import net.lim.files.FTPFileGetter;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -8,12 +10,20 @@ import java.util.Properties;
 
 public class ConnectionFactory {
     private static final String CONFIG_FILE_NAME = "configuration.ini";
+    private File configFile;
+    private Properties connectionProperties;
     //TODO add logger
 
+
+    public ConnectionFactory() {
+        configFile = checkConfigExists();
+        connectionProperties = loadProperties(configFile);
+    }
+
     public Connection createConnection() {
-        File configFile = checkConfigExists();
-        Properties connectionProperties = loadProperties(configFile);
-        String connectionType = readConnectionType(connectionProperties);
+        configFile = checkConfigExists();
+        connectionProperties = loadProperties(configFile);
+        String connectionType = readConnectionType();
         switch (connectionType.toLowerCase()) {
             case "stub": {
                 return new StubConnection();
@@ -36,6 +46,13 @@ public class ConnectionFactory {
         }
     }
 
+    public FTPFileGetter createFTPGetter() {
+        String ftpHost = connectionProperties.getProperty("ftp.host");
+        int ftpPort = Integer.parseInt(connectionProperties.getProperty("ftp.port"));
+        String ftpUser = connectionProperties.getProperty("ftp.username");
+        return new FTPFileGetter(ftpHost, ftpPort, ftpUser);
+    }
+
     private Properties loadProperties(File configFile) {
         Properties properties;
         try (FileInputStream fileInputStream = new FileInputStream(configFile)){
@@ -47,8 +64,8 @@ public class ConnectionFactory {
         return properties;
     }
 
-    private String readConnectionType(Properties properties) {
-        String connectionType = properties.getProperty("connection.type");
+    private String readConnectionType() {
+        String connectionType = connectionProperties.getProperty("connection.type");
         if (connectionType == null) {
             throw new RuntimeException("Invalid config file. It should contain connection.type property");
         }
