@@ -27,7 +27,9 @@ public class FileServices {
     @Path("/ignoredDirs")
     public Response getIgnoredDirs() {
         JSONArray ignoredDirs = FilesInfo.getIgnoredDirs();
-        return Response.ok(ignoredDirs.toJSONString(), MediaType.APPLICATION_JSON).build();
+        JSONObject json = new JSONObject();
+        json.put("ignoredDirs", ignoredDirs);
+        return Response.ok(json.toJSONString(), MediaType.APPLICATION_JSON).build();
     }
 
     @GET
