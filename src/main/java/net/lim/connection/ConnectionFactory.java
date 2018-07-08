@@ -5,7 +5,6 @@ import net.lim.files.FTPFileGetter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Properties;
 
 public class ConnectionFactory {

@@ -1,6 +1,8 @@
 package net.lim.services;
 
 import net.lim.LServer;
+import net.lim.files.FilesInfo;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import javax.ws.rs.GET;
@@ -24,8 +26,8 @@ public class FileServices {
     @GET
     @Path("/ignoredDirs")
     public Response getIgnoredDirs() {
-        //TODO return ignored dirs to check separated with \n
-        return Response.ok().build();
+        JSONArray ignoredDirs = FilesInfo.getIgnoredDirs();
+        return Response.ok(ignoredDirs.toJSONString(), MediaType.APPLICATION_JSON).build();
     }
 
     @GET
