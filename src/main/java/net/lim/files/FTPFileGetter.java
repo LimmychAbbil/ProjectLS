@@ -52,6 +52,8 @@ public class FTPFileGetter {
                 client.completePendingCommand();
             }
             isReady.set(true);
+            //TODO replace with logger
+            System.out.println("Server ready");
             return hashInfo;
         } finally {
             if (client != null) {

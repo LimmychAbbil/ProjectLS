@@ -8,6 +8,7 @@ public class LServer {
     public static Connection connection;
     public static FTPFileGetter fileGetter;
     static {
+        System.out.println("Initializing server...");
         init();
     }
 

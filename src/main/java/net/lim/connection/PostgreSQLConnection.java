@@ -81,7 +81,6 @@ public class PostgreSQLConnection implements Connection {
 
             ps.setString(2, hashedPass);
             ps.setString(3, salt);
-            System.out.println(salt);
             ps.execute();
             return true;
         } catch (Exception e) {
@@ -91,19 +90,17 @@ public class PostgreSQLConnection implements Connection {
         return false;
     }
 
-    private static byte[] addSallToPass(String password, byte[] salt) throws NoSuchAlgorithmException {
+    private static byte[] addSallToPass(String password, byte[] salt) {
         StringBuilder sb = new StringBuilder();
         try {
             MessageDigest md = MessageDigest.getInstance("SHA");
             md.update(salt);
             byte[] bytes = md.digest(password.getBytes());
 
-            for(int i=0; i< bytes.length ;i++)
-            {
+            for (int i = 0; i < bytes.length; i++) {
                 sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
             }
-        }
-        catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return sb.toString().getBytes();
