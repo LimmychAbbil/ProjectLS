@@ -54,7 +54,7 @@ public class PostgreSQLConnection implements Connection {
             if (rs.next()) {
                 String salt = rs.getString(3);
                 String saltPassword = rs.getString(2);
-                if (saltPassword.equals(new String(addSallToPass(password, salt.getBytes())))) {
+                if (saltPassword.equals(new String(addSaltToPass(password, salt.getBytes())))) {
                     return true;
                 }
             }
@@ -69,28 +69,40 @@ public class PostgreSQLConnection implements Connection {
 
 
     @Override
-    public boolean register(String userName, String password) {
+    public int register(String userName, String password) {
         try (java.sql.Connection connection = openConnection();
-             PreparedStatement ps = connection.prepareStatement("INSERT INTO " + tableName + " VALUES (?, ?, ?)")) {
+             PreparedStatement validationStatement = connection.prepareStatement("SELECT * FROM " + tableName + " WHERE login=?");
+             PreparedStatement registrationStatement = connection.prepareStatement("INSERT INTO " + tableName + " VALUES (?, ?, ?)")) {
 
-            ps.setString(1, userName);
+            if (checkIfUserNameInUse(validationStatement, userName)) {
+                return 2;
+            }
+            registrationStatement.setString(1, userName);
             byte[] saltBytes = generateSalt();
-            byte[] hashedPassBytes = addSallToPass(password, saltBytes);
+            byte[] hashedPassBytes = addSaltToPass(password, saltBytes);
             String hashedPass = new String(hashedPassBytes);
             String salt = new String(saltBytes);
 
-            ps.setString(2, hashedPass);
-            ps.setString(3, salt);
-            ps.execute();
-            return true;
+            registrationStatement.setString(2, hashedPass);
+            registrationStatement.setString(3, salt);
+            registrationStatement.execute();
+            return 0;
         } catch (Exception e) {
             //TODO logger
             e.printStackTrace();
         }
-        return false;
+        return 1;
     }
 
-    private static byte[] addSallToPass(String password, byte[] salt) {
+    private boolean checkIfUserNameInUse(PreparedStatement validationStatement, String userName) throws SQLException {
+        validationStatement.setString(1, userName);
+        ResultSet result = validationStatement.executeQuery();
+        boolean userNameInUse = result.next();
+        result.close();
+        return userNameInUse;
+    }
+
+    private static byte[] addSaltToPass(String password, byte[] salt) {
         StringBuilder sb = new StringBuilder();
         try {
             MessageDigest md = MessageDigest.getInstance("SHA");

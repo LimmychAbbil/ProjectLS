@@ -15,7 +15,7 @@ public class StubConnection implements Connection {
     }
 
     @Override
-    public boolean register(String userName, String password) {
-        return true;
+    public int register(String userName, String password) {
+        return 0;
     }
 }

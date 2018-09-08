@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.lim</groupId>
     <artifactId>ProjectLS</artifactId>
-    <version>0.02a</version>
+    <version>0.02b</version>
     <build>
         <plugins>
             <plugin>

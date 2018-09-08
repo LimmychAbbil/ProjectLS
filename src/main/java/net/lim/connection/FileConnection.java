@@ -34,14 +34,14 @@ public class FileConnection implements Connection {
     }
 
     @Override
-    public synchronized boolean register(String userName, String password) {
+    public synchronized int register(String userName, String password) {
         try (FileWriter writer = new FileWriter(storageFile)){
             writer.write(userName + ":" + password);
             writer.flush();
-            return true;
+            return 0;
         } catch (IOException e) {
             //TODO logger
         }
-        return false;
+        return 1;
     }
 }
