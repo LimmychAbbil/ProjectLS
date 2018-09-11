@@ -4,6 +4,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +23,7 @@ public class FTPFileGetter {
     private final int ftpPort;
     private final String ftpUser;
     private AtomicBoolean isReady = new AtomicBoolean(false);
+    private static final Logger logger = LoggerFactory.getLogger(FTPFileGetter.class);
 
     public FTPFileGetter(String ftpHost, int ftpPort, String ftpUser) {
         this.ftpHost = ftpHost;
@@ -52,8 +55,7 @@ public class FTPFileGetter {
                 client.completePendingCommand();
             }
             isReady.set(true);
-            //TODO replace with logger
-            System.out.println("Server ready");
+            logger.info("Server ready");
             return hashInfo;
         } finally {
             if (client != null) {
@@ -72,7 +74,6 @@ public class FTPFileGetter {
     private List<String> getAllFilePath(FTPClient client, String dir) throws IOException {
         List<String> allFilePaths = new ArrayList<>();
         FTPFile[] files = client.listFiles(dir);
-        //TODO could be buggy, double check it
         for (FTPFile file: files) {
             if (file.isDirectory()) {
                 allFilePaths.addAll(getAllFilePath(client, dir + "/" + file.getName()));

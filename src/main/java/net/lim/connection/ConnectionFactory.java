@@ -2,6 +2,8 @@ package net.lim.connection;
 
 import net.lim.files.FTPFileGetter;
 import net.lim.util.ConfigReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,7 +13,7 @@ import java.util.Properties;
 public class ConnectionFactory {
 
     private Properties connectionProperties;
-    //TODO add logger
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
 
 
     public ConnectionFactory() {
@@ -20,12 +22,15 @@ public class ConnectionFactory {
 
     public Connection createConnection() {
         String connectionType = readConnectionType();
+        logger.info("Creation data storage connection");
         switch (connectionType.toLowerCase()) {
             case "stub": {
+                logger.info("Creating stub connection...");
                 return new StubConnection();
             }
             case "file": {
                 String storageFileName = connectionProperties.getProperty("storage.file");
+                logger.info("Creating file connection...");
                 return new FileConnection(storageFileName);
             }
             case "postgresql": {
@@ -35,9 +40,11 @@ public class ConnectionFactory {
                 String tableName = connectionProperties.getProperty("connection.tablename");
                 String postgreUser = connectionProperties.getProperty("connection.username");
                 String postgrePass = connectionProperties.getProperty("connection.password");
+                logger.info("Creating postgres connection...");
                 return new PostgreSQLConnection(host, port, database, tableName, postgreUser, postgrePass);
             } default: {
-                throw new RuntimeException("Invalid connection.type");
+                logger.error("Can't create connection for type", connectionType);
+                throw new RuntimeException("Invalid connection type");
             }
         }
     }

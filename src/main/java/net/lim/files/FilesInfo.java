@@ -1,6 +1,8 @@
 package net.lim.files;
 
 import org.json.simple.JSONArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,13 +12,14 @@ import java.util.List;
 
 public class FilesInfo {
     private static final String CONFIG_FILE_NAME = ".ignoredDirs";
+    private static final Logger logger = LoggerFactory.getLogger(FilesInfo.class);
     public static JSONArray getIgnoredDirs() {
         List<String> ignoredDirsList = new ArrayList<>();
         try {
             ignoredDirsList.addAll(getIgnoredDirsList());
+            logger.info("Ignored dirs list created successfully, size = " + ignoredDirsList.size());
         } catch (Exception e) {
-            e.printStackTrace();
-            //TODO logger
+            logger.error("Can't get ignoredDirs list: " + e.getMessage());
         }
         JSONArray jsonArrayDirs = new JSONArray();
         jsonArrayDirs.addAll(ignoredDirsList);

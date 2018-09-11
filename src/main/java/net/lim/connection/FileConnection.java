@@ -1,5 +1,8 @@
 package net.lim.connection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 /**
@@ -7,6 +10,7 @@ import java.io.*;
  */
 public class FileConnection implements Connection {
     private File storageFile;
+    private static final Logger logger = LoggerFactory.getLogger(FileConnection.class);
     FileConnection(String fileName) {
         this.storageFile = new File(fileName);
     }
@@ -27,7 +31,7 @@ public class FileConnection implements Connection {
                 }
             }
         } catch (IOException e) {
-            //TODO logger
+            logger.error("IOException occurred when trying to login user {0} :" + e.getMessage(), userName);
         }
 
         return false;
@@ -40,7 +44,7 @@ public class FileConnection implements Connection {
             writer.flush();
             return 0;
         } catch (IOException e) {
-            //TODO logger
+            logger.error("IOException occurred when trying to register user {0} :" + e.getMessage(), userName);
         }
         return 1;
     }

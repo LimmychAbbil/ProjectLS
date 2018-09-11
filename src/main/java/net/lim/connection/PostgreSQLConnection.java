@@ -1,5 +1,8 @@
 package net.lim.connection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -14,6 +17,7 @@ public class PostgreSQLConnection implements Connection {
     private final String userName;
     private final String password;
     private final String tableName;
+    private static final Logger logger = LoggerFactory.getLogger(PostgreSQLConnection.class);
 
     PostgreSQLConnection(String host, int port, String database, String tableName,
                          String postgreUserName, String postgrePass) {
@@ -38,7 +42,7 @@ public class PostgreSQLConnection implements Connection {
             connection.commit();
             return true;
         } catch (SQLException e) {
-            //TODO logger
+            logger.error("Can't establish connection: " + e.getMessage());
             return false;
         }
 
@@ -61,8 +65,7 @@ public class PostgreSQLConnection implements Connection {
             rs.close();
 
         } catch (Exception e) {
-            //TODO logger
-            e.printStackTrace();
+            logger.error("Exception occurred when login user {0}: " + e.getMessage(), userName);
         }
         return false;
     }
@@ -75,6 +78,7 @@ public class PostgreSQLConnection implements Connection {
              PreparedStatement registrationStatement = connection.prepareStatement("INSERT INTO " + tableName + " VALUES (?, ?, ?)")) {
 
             if (checkIfUserNameInUse(validationStatement, userName)) {
+                logger.info("Trying to register user {0}, user name already taken", userName);
                 return 2;
             }
             registrationStatement.setString(1, userName);
@@ -88,8 +92,7 @@ public class PostgreSQLConnection implements Connection {
             registrationStatement.execute();
             return 0;
         } catch (Exception e) {
-            //TODO logger
-            e.printStackTrace();
+            logger.error("Exception occurred when registering user {0}: " + e.getMessage(), userName);
         }
         return 1;
     }
