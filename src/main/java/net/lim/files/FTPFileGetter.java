@@ -55,7 +55,7 @@ public class FTPFileGetter {
                 client.completePendingCommand();
             }
             isReady.set(true);
-            logger.info("Server ready");
+            logger.info("Hash info has been read successfully. Size = " + hashInfo.size());
             return hashInfo;
         } finally {
             if (client != null) {

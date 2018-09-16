@@ -65,7 +65,7 @@ public class PostgreSQLConnection implements Connection {
             rs.close();
 
         } catch (Exception e) {
-            logger.error("Exception occurred when login user {0}: " + e.getMessage(), userName);
+            logger.error("Exception occurred when login user {}: " + e.getMessage(), userName);
         }
         return false;
     }
@@ -78,7 +78,7 @@ public class PostgreSQLConnection implements Connection {
              PreparedStatement registrationStatement = connection.prepareStatement("INSERT INTO " + tableName + " VALUES (?, ?, ?)")) {
 
             if (checkIfUserNameInUse(validationStatement, userName)) {
-                logger.info("Trying to register user {0}, user name already taken", userName);
+                logger.info("Trying to register user {}, user name already taken", userName);
                 return 2;
             }
             registrationStatement.setString(1, userName);
@@ -92,7 +92,7 @@ public class PostgreSQLConnection implements Connection {
             registrationStatement.execute();
             return 0;
         } catch (Exception e) {
-            logger.error("Exception occurred when registering user {0}: " + e.getMessage(), userName);
+            logger.error("Exception occurred when registering user {}: " + e.getMessage(), userName);
         }
         return 1;
     }
