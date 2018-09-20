@@ -34,4 +34,11 @@ public class ConfigReader {
         }
         return properties;
     }
+
+    public static Properties getProperties() {
+        if (properties == null) {
+            throw new IllegalStateException("Server is not ready or not configured");
+        }
+        return properties;
+    }
 }
