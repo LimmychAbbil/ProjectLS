@@ -43,7 +43,7 @@ public class ConnectionFactory {
                 logger.info("Creating postgres connection...");
                 return new PostgreSQLConnection(host, port, database, tableName, postgreUser, postgrePass);
             } default: {
-                logger.error("Can't create connection for type", connectionType);
+                logger.error("Can't create connection for type {}", connectionType);
                 throw new RuntimeException("Invalid connection type");
             }
         }

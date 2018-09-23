@@ -12,7 +12,11 @@ public class FileConnection implements Connection {
     private File storageFile;
     private static final Logger logger = LoggerFactory.getLogger(FileConnection.class);
     FileConnection(String fileName) {
-        this.storageFile = new File(fileName);
+        this(new File(fileName));
+    }
+
+    FileConnection (File file) {
+        this.storageFile = file;
     }
 
     @Override
@@ -27,7 +31,7 @@ public class FileConnection implements Connection {
             while (reader.ready()) {
                 String pair = reader.readLine();
                 if (pair.startsWith(userName)) {
-                    return password.equals(pair.substring(0, pair.indexOf(':')));
+                    return password.equals(pair.substring(pair.indexOf(':') + 1));
                 }
             }
         } catch (IOException e) {
