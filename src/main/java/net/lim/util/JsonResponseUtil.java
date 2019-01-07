@@ -1,12 +1,13 @@
 package net.lim.util;
 
+import jersey.repackaged.com.google.common.collect.ImmutableMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServersInfoConstructor {
-    private final static Logger log = LoggerFactory.getLogger(ServersInfoConstructor.class);
+public class JsonResponseUtil {
+    private final static Logger log = LoggerFactory.getLogger(JsonResponseUtil.class);
     private static JSONObject serversInfoJSON;
 
     public static JSONObject getServersInfoJSON() {
@@ -41,5 +42,9 @@ public class ServersInfoConstructor {
         }
         log.debug("Servers info JSON generated. Result = {}", serversInfo.toJSONString());
         return serversInfo;
+    }
+
+    public static JSONObject getCurrentBackground() {
+        return new JSONObject(ImmutableMap.of("current.background", ConfigReader.getProperties().getProperty("current.background")));
     }
 }

@@ -1,11 +1,11 @@
 package net.lim.services;
 
-import net.lim.util.ConfigReader;
+import net.lim.util.JsonResponseUtil;
+import org.json.simple.JSONObject;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.io.File;
 import java.net.URL;
@@ -13,10 +13,10 @@ import java.net.URL;
 @Path("/images")
 public class BackgroundService {
     @GET
-    @Path("current")
+    @Path("/current")
     public Response getCurrentImageName() {
-        String current = ConfigReader.getProperties().getProperty("current.background");
-        return Response.ok(current).build();
+        JSONObject current = JsonResponseUtil.getCurrentBackground();
+        return Response.ok(current.toJSONString()).build();
     }
 
     @GET

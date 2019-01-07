@@ -1,6 +1,6 @@
 package net.lim.services;
 
-import net.lim.util.ServersInfoConstructor;
+import net.lim.util.JsonResponseUtil;
 import org.json.simple.JSONObject;
 
 import javax.ws.rs.GET;
@@ -13,7 +13,7 @@ public class ServerListService {
 
     @GET
     public Response getServerList() {
-        JSONObject serverInfoJSON = ServersInfoConstructor.getServersInfoJSON();
+        JSONObject serverInfoJSON = JsonResponseUtil.getServersInfoJSON();
         if (serverInfoJSON != null) {
             return Response.ok(serverInfoJSON.toJSONString(), MediaType.APPLICATION_JSON).build();
         } else {
