@@ -64,18 +64,23 @@ public class FTPFileGetter {
         }
     }
 
-    private String getMD5HashForFile(FTPClient client, String fileName) throws IOException, NoSuchAlgorithmException {
+    private String getMD5HashForFile(FTPClient client, String fileName) throws IOException {
         //encoding fix
         try (InputStream is = client.retrieveFileStream(new String(fileName.getBytes("UTF-8"), "ISO-8859-1"))) {
             return DigestUtils.md5Hex(is);
         }
     }
 
-    private List<String> getAllFilePath(FTPClient client, String dir) throws IOException {
+    private List<String> getAllFilePath(FTPClient client, String dir) throws Exception {
+        List<String> ignoredDirs = FilesInfo.getIgnoredDirsList();
+
         List<String> allFilePaths = new ArrayList<>();
         FTPFile[] files = client.listFiles(dir);
         for (FTPFile file: files) {
             if (file.isDirectory()) {
+                if (ignoredDirs.contains(file.getName())) {
+                    continue;
+                }
                 allFilePaths.addAll(getAllFilePath(client, dir + "/" + file.getName()));
             } else {
                 allFilePaths.add(dir + "/" + file.getName());

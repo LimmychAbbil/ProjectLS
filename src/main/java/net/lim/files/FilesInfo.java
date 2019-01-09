@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class FilesInfo {
         return jsonArrayDirs;
     }
 
-    private static List<String> getIgnoredDirsList() throws Exception {
+    static List<String> getIgnoredDirsList() throws IOException, URISyntaxException {
         File ignoredDirsFile = new File(FilesInfo.class.getClassLoader().getResource(CONFIG_FILE_NAME).toURI());
         List<String> ignoredDirs = new ArrayList<>();
         try (BufferedReader fileReader = new BufferedReader(new FileReader(ignoredDirsFile))) {
