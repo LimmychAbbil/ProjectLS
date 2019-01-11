@@ -1,3 +1,4 @@
-logs
-saves
-backgrounds
+/.minecraft/logs
+/.minecraft/saves
+/logs
+/backgrounds

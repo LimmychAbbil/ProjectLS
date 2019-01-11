@@ -77,13 +77,14 @@ public class FTPFileGetter {
         List<String> allFilePaths = new ArrayList<>();
         FTPFile[] files = client.listFiles(dir);
         for (FTPFile file: files) {
+            String relativeFileName = dir + "/" + file.getName();
             if (file.isDirectory()) {
-                if (ignoredDirs.contains(file.getName())) {
+                if (ignoredDirs.contains(relativeFileName)) {
                     continue;
                 }
-                allFilePaths.addAll(getAllFilePath(client, dir + "/" + file.getName()));
+                allFilePaths.addAll(getAllFilePath(client, relativeFileName));
             } else {
-                allFilePaths.add(dir + "/" + file.getName());
+                allFilePaths.add(relativeFileName);
             }
         }
         return allFilePaths;
