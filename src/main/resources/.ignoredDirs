@@ -1,5 +1,6 @@
 /.minecraft/logs/
 /.minecraft/saves/
+/.minecraft/screenshots/
 /.minecraft/options.txt
 /.minecraft/servers.dat
 /.minecraft/usercache.json
