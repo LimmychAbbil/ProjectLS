@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,19 +70,21 @@ public class FTPFileGetter {
     }
 
     private List<String> getAllFilePath(FTPClient client, String dir) throws Exception {
-        List<String> ignoredDirs = FilesInfo.getIgnoredDirsList();
+        List<String> ignoredFilesList = FilesInfo.getIgnoredFilesList();
 
         List<String> allFilePaths = new ArrayList<>();
         FTPFile[] files = client.listFiles(dir);
         for (FTPFile file: files) {
             String relativeFileName = dir + "/" + file.getName();
             if (file.isDirectory()) {
-                if (ignoredDirs.contains(relativeFileName)) {
+                if (ignoredFilesList.contains(relativeFileName + "/")) {
                     continue;
                 }
                 allFilePaths.addAll(getAllFilePath(client, relativeFileName));
             } else {
-                allFilePaths.add(relativeFileName);
+                if (!ignoredFilesList.contains(relativeFileName)) {
+                    allFilePaths.add(relativeFileName);
+                }
             }
         }
         return allFilePaths;

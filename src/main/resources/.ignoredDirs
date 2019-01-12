@@ -1,4 +1,7 @@
-/.minecraft/logs
-/.minecraft/saves
-/logs
-/backgrounds
+/.minecraft/logs/
+/.minecraft/saves/
+/.minecraft/options.txt
+/.minecraft/servers.dat
+/.minecraft/usercache.json
+/logs/
+/backgrounds/

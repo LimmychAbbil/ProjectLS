@@ -7,11 +7,8 @@ import org.json.simple.JSONObject;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.Map;
 
 @Path("/files")
 public class FileServices {
@@ -24,11 +21,11 @@ public class FileServices {
     }
 
     @GET
-    @Path("/ignoredDirs")
-    public Response getIgnoredDirs() {
-        JSONArray ignoredDirs = FilesInfo.getIgnoredDirs();
+    @Path("/ignoredFiles")
+    public Response getIgnoredFiles() {
+        JSONArray ignoredFiles = FilesInfo.getIgnoredFiles();
         JSONObject json = new JSONObject();
-        json.put("ignoredDirs", ignoredDirs);
+        json.put("ignoredFiles", ignoredFiles);
         return Response.ok(json.toJSONString(), MediaType.APPLICATION_JSON).build();
     }
 
