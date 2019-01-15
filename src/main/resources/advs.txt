@@ -1,8 +1,8 @@
 #Example:
 #Header;Text;URL
 #Header;Text
-#Header
+#Header;;URL
 
 Adv1;Text1
-Adv2
+Adv2;;https://mojang.com/
 Adv3;Text3;http://google.com
