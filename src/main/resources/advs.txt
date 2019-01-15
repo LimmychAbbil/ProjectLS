@@ -1,0 +1,8 @@
+#Example:
+#Header;Text;URL
+#Header;Text
+#Header
+
+Adv1;Text1
+Adv2
+Adv3;Text3;http://google.com
