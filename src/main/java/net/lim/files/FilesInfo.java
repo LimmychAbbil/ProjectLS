@@ -13,22 +13,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FilesInfo {
+    private static List<String> ignoredFilesList = null;
     private static final String CONFIG_FILE_NAME = ".ignoredDirs";
     private static final Logger logger = LoggerFactory.getLogger(FilesInfo.class);
     public static JSONArray getIgnoredFiles() {
-        List<String> ignoredDirsList = new ArrayList<>();
+        List<String> ignoredFilesList = new ArrayList<>();
         try {
-            ignoredDirsList.addAll(getIgnoredFilesList());
-            logger.info("Ignored files list created successfully, size = " + ignoredDirsList.size());
+            ignoredFilesList.addAll(getIgnoredFilesList());
         } catch (Exception e) {
             logger.error("Can't get ignoredFiles list: " + e.getMessage());
         }
-        JSONArray jsonArrayDirs = new JSONArray();
-        jsonArrayDirs.addAll(ignoredDirsList);
-        return jsonArrayDirs;
+        JSONArray jsonArrayIgnoredFiles = new JSONArray();
+        jsonArrayIgnoredFiles.addAll(ignoredFilesList);
+        return jsonArrayIgnoredFiles;
     }
 
     static List<String> getIgnoredFilesList() throws IOException, URISyntaxException {
+        if (ignoredFilesList == null) {
+            createIgnoredFilesList();
+        }
+
+        return ignoredFilesList;
+    }
+
+    private static void createIgnoredFilesList() throws IOException, URISyntaxException {
         File ignoredDirsFile = new File(FilesInfo.class.getClassLoader().getResource(CONFIG_FILE_NAME).toURI());
         List<String> ignoredDirs = new ArrayList<>();
         try (BufferedReader fileReader = new BufferedReader(new FileReader(ignoredDirsFile))) {
@@ -36,7 +44,8 @@ public class FilesInfo {
                 ignoredDirs.add(fileReader.readLine());
             }
         }
-        return ignoredDirs;
+        ignoredFilesList = ignoredDirs;
+        logger.info("Ignored files list created successfully, size = " + ignoredFilesList.size());
     }
 }
 
