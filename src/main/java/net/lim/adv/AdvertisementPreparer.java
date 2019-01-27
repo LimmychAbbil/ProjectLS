@@ -1,7 +1,5 @@
 package net.lim.adv;
 
-import org.apache.commons.codec.binary.StringUtils;
-import org.glassfish.jersey.message.internal.StringBuilderUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;

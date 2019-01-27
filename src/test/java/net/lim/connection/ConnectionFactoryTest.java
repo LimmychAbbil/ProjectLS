@@ -85,8 +85,4 @@ public class ConnectionFactoryTest {
 
         Assert.fail();
     }
-
-    @Test
-    public void createFTPGetter() {
-    }
 }
