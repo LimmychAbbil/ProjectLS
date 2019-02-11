@@ -4,5 +4,9 @@
 /.minecraft/options.txt
 /.minecraft/servers.dat
 /.minecraft/usercache.json
+/.minecraft/usernamecache.json
+/.minecraft/optionsof.txt
+/.minecraft/assets/skins/sk/
+/.minecraft/config/
 /logs/
 /backgrounds/
