@@ -7,9 +7,11 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.charset.Charset;
 
 public class AdvertisementPreparer {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdvertisementPreparer.class);
@@ -28,7 +30,7 @@ public class AdvertisementPreparer {
         } else {
             File advsFile = new File(advsFilePath);
             JSONArray array = new JSONArray();
-            try (BufferedReader br = new BufferedReader(new FileReader(advsFile))) {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(advsFile), Charset.forName("UTF-8")))) {
                 while (br.ready()) {
                     String advLine = br.readLine();
                     if (!advLine.startsWith("#") && !advLine.isEmpty()) {

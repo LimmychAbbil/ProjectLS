@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 public class AdvService {
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response getAllAdvs() {
         return Response.ok(AdvertisementPreparer.prepareAdvJSON().toJSONString()).build();
     }
