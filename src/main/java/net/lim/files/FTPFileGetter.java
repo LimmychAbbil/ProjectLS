@@ -60,11 +60,13 @@ public class FTPFileGetter {
             }
             isReady.set(true);
             logger.info("Hash info has been read successfully. Size = " + hashInfo.size());
-            return hashInfo;
+        } catch (Exception e) {
+            logger.error("Can't create connection to the FTP server", e);
         } finally {
             if (client != null) {
                 client.quit();
             }
+            return hashInfo;
         }
     }
 

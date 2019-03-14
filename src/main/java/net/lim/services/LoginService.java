@@ -25,7 +25,7 @@ public class LoginService {
         if (LServer.connection.login(userName, password)) {
             Token token = TokenUtils.issueToken(userName);
             entityJSON.put("message", "OK");
-            entityJSON.put("tokenHash", token.getTokenValue());
+            entityJSON.put("tokenHash", new String(token.getTokenValue()));
             return Response.status(200).entity(entityJSON.toJSONString()).build();
         } else {
             entityJSON.put("message", "Login failed");
