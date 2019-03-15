@@ -66,8 +66,8 @@ public class FTPFileGetter {
             if (client != null) {
                 client.quit();
             }
-            return hashInfo;
         }
+        return hashInfo;
     }
 
     private String getMD5HashForFile(FTPClient client, String fileName) throws IOException {
