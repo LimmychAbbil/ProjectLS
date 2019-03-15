@@ -6,4 +6,3 @@
 Adv1;Text1
 Adv2;;https://mojang.com/
 Adv3;Text3;http://google.com
-Борух;Президент Мира УРРРААА
