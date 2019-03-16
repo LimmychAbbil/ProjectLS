@@ -97,6 +97,11 @@ public class PostgreSQLConnection implements Connection {
         return 1;
     }
 
+    @Override
+    public void changePassword(String userName, String newPassword) {
+        //TODO implement it
+    }
+
     private boolean checkIfUserNameInUse(PreparedStatement validationStatement, String userName) throws SQLException {
         validationStatement.setString(1, userName);
         ResultSet result = validationStatement.executeQuery();

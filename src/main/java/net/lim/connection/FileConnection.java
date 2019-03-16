@@ -52,4 +52,9 @@ public class FileConnection implements Connection {
         }
         return 1;
     }
+
+    @Override
+    public void changePassword(String userName, String newPassword) {
+        //TODO implement it
+    }
 }

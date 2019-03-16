@@ -14,4 +14,6 @@ public interface Connection {
      * 2 - userName is already in use
      */
     int register(String userName, String password);
+
+    void changePassword(String userName, String newPassword);
 }
