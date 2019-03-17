@@ -15,5 +15,12 @@ public interface Connection {
      */
     int register(String userName, String password);
 
-    void changePassword(String userName, String newPassword);
+    /**
+     * Change password
+     * @return int code with result
+     * 0 - success
+     * 1 - failed with unknown reason
+     * 2 - user not registered
+     */
+    int changePassword(String userName, String newPassword);
 }

@@ -20,7 +20,7 @@ public class StubConnection implements Connection {
     }
 
     @Override
-    public void changePassword(String userName, String newPassword) {
-        //NOOP
+    public int changePassword(String userName, String newPassword) {
+        return 0;
     }
 }

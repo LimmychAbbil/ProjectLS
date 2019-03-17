@@ -98,8 +98,9 @@ public class PostgreSQLConnection implements Connection {
     }
 
     @Override
-    public void changePassword(String userName, String newPassword) {
+    public int changePassword(String userName, String newPassword) {
         //TODO implement it
+        return 0;
     }
 
     private boolean checkIfUserNameInUse(PreparedStatement validationStatement, String userName) throws SQLException {
