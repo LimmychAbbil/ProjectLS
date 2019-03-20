@@ -25,8 +25,14 @@ public class PasswordService {
     public Response changePassAdm(@FormParam("userName") String userName, @FormParam("userName") String newPass, @Context HttpServletRequest request) {
         String remoteAddr = request.getRemoteAddr();
         if ("0:0:0:0:0:0:0:1".equals(remoteAddr) || ("localhost".equals(remoteAddr)) || ("127.0.0.1".equals(remoteAddr))) {
-            LServer.connection.changePassword(userName, newPass);
-            return Response.ok().build(); //TODO redirect to LSA main
+            int result = LServer.connection.changePassword(userName, newPass);
+            switch (result) {
+                case 0:
+                    return Response.ok().build(); //TODO redirect to LSA main
+                case 1: return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+                case 2: return Response.status(Response.Status.NOT_FOUND).build();
+                default: return null;
+            }
         } else {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
