@@ -18,4 +18,9 @@ public class StubConnection implements Connection {
     public int register(String userName, String password) {
         return 0;
     }
+
+    @Override
+    public int changePassword(String userName, String newPassword) {
+        return 0;
+    }
 }

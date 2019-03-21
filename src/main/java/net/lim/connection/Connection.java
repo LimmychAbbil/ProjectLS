@@ -14,4 +14,13 @@ public interface Connection {
      * 2 - userName is already in use
      */
     int register(String userName, String password);
+
+    /**
+     * Change password
+     * @return int code with result
+     * 0 - success
+     * 1 - failed with unknown reason
+     * 2 - user not registered
+     */
+    int changePassword(String userName, String newPassword);
 }

@@ -83,8 +83,7 @@ public class PostgreSQLConnection implements Connection {
             }
             registrationStatement.setString(1, userName);
             byte[] saltBytes = generateSalt();
-            byte[] hashedPassBytes = addSaltToPass(password, saltBytes);
-            String hashedPass = new String(hashedPassBytes);
+            String hashedPass = generateHashedPassword(password, saltBytes);
             String salt = new String(saltBytes);
 
             registrationStatement.setString(2, hashedPass);
@@ -95,6 +94,40 @@ public class PostgreSQLConnection implements Connection {
             logger.error("Exception occurred when registering user {}: " + e.getMessage(), userName);
         }
         return 1;
+    }
+
+    @Override
+    public int changePassword(String userName, String newPassword) {
+        try (java.sql.Connection connection = openConnection();
+             PreparedStatement validationStatement = connection.prepareStatement("SELECT * FROM " + tableName + " WHERE login=?");
+             PreparedStatement passwChangeStatement = connection.prepareStatement("UPDATE " + tableName + "SET pass = ?, salt = ? WHERE login = ?")) {
+
+            boolean userExist = checkIfUserNameInUse(validationStatement, userName);
+            if (userExist) {
+                byte[] saltBytes = generateSalt();
+                String hashedPass = generateHashedPassword(newPassword, saltBytes);
+                String salt = new String(saltBytes);
+
+                passwChangeStatement.setString(1, hashedPass);
+                passwChangeStatement.setString(2, salt);
+
+                passwChangeStatement.setString(3, userName);
+
+                passwChangeStatement.execute();
+            } else {
+                return 2;
+            }
+
+        } catch (SQLException e) {
+            logger.error("Exception occurred when trying to change password for user {}: " + e.getMessage(), userName);
+            return 1;
+        }
+        return 0;
+    }
+
+    private String generateHashedPassword(String newPassword, byte[] saltBytes) {
+        byte[] hashedPassBytes = addSaltToPass(newPassword, saltBytes);
+        return new String(hashedPassBytes);
     }
 
     private boolean checkIfUserNameInUse(PreparedStatement validationStatement, String userName) throws SQLException {
