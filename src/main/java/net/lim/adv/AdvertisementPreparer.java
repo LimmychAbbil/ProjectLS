@@ -11,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class AdvertisementPreparer {
     private static final Logger LOGGER = LoggerFactory.getLogger(AdvertisementPreparer.class);
@@ -30,7 +30,7 @@ public class AdvertisementPreparer {
         } else {
             File advsFile = new File(advsFilePath);
             JSONArray array = new JSONArray();
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(advsFile), Charset.forName("UTF-8")))) {
+            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(advsFile), StandardCharsets.UTF_8))) {
                 while (br.ready()) {
                     String advLine = br.readLine();
                     if (!advLine.startsWith("#") && !advLine.isEmpty()) {
