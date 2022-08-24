@@ -71,7 +71,7 @@ public class FileConnectionTest {
     @Test
     public void testRegistrationFileNotFound() throws Exception {
         connection = new FileConnection(dataFile);
-        PowerMockito.whenNew(FileWriter.class).withArguments(dataFile).thenThrow(IOException.class);
+        PowerMockito.whenNew(FileWriter.class).withArguments(dataFile, true).thenThrow(IOException.class);
         int isLogin = connection.register("a", "b");
 
         assertEquals(1, isLogin);
@@ -81,7 +81,7 @@ public class FileConnectionTest {
     public void testRegistrationOK() throws Exception {
         connection = new FileConnection(dataFile);
         FileWriter mockedWriter = Mockito.mock(FileWriter.class);
-        PowerMockito.whenNew(FileWriter.class).withArguments(dataFile).thenReturn(mockedWriter);
+        PowerMockito.whenNew(FileWriter.class).withArguments(dataFile, true).thenReturn(mockedWriter);
 
         int registrationResponse = connection.register("a", "b");
 
