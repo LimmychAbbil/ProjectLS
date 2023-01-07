@@ -1,12 +1,12 @@
 package net.lim;
 
+import jakarta.servlet.http.HttpServlet;
 import net.lim.connection.Connection;
 import net.lim.connection.ConnectionFactory;
 import net.lim.files.FTPFileGetter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServlet;
 
 public class LServer extends HttpServlet {
     public static Connection connection;

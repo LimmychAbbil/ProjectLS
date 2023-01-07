@@ -1,10 +1,11 @@
 package net.lim.util;
 
-import jersey.repackaged.com.google.common.collect.ImmutableMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 public class JsonResponseUtil {
     private final static Logger log = LoggerFactory.getLogger(JsonResponseUtil.class);
@@ -45,6 +46,6 @@ public class JsonResponseUtil {
     }
 
     public static JSONObject getCurrentBackground() {
-        return new JSONObject(ImmutableMap.of("current.background", ConfigReader.getProperties().getProperty("current.background")));
+        return new JSONObject(Map.of("current.background", ConfigReader.getProperties().getProperty("current.background")));
     }
 }
