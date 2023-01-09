@@ -1,5 +1,6 @@
 package net.lim.files;
 
+import net.lim.util.ConfigReader;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -9,10 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.SocketException;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FTPFileGetter {
@@ -31,9 +30,64 @@ public class FTPFileGetter {
         this.isSameHostUsed = isSameHostUsed;
         try {
             fullHashInfo = getHashInfo();
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException("Can't get hash info", e);
         }
+
+        try {
+            validateCurrentBackground();
+        } catch (IOException e) {
+            throw new RuntimeException("Can't validate background on ftp server");
+        }
+    }
+
+    private FTPClient openFTPClient() throws IOException {
+        FTPClient client = new FTPClient();
+
+        client = new FTPClient();
+        if (isSameHostUsed) {
+            client.connect("localhost", ftpPort);
+        } else {
+            client.connect(ftpHost, ftpPort);
+        }
+        client.login(ftpUser, null);
+        client.setControlEncoding("UTF-8");
+
+        return client;
+    }
+
+    /**
+     * Validates "current.background" file specified in the configuration.ini exist on ftp server in the
+     * /background/ dir, otherwise throws an exception
+     */
+    private void validateCurrentBackground() throws IOException {
+        FTPClient client = null;
+        String backgroundName = ConfigReader.getProperties().getProperty("current.background");
+
+        try {
+            client = openFTPClient();
+
+            boolean backgroundDirCWD = client.changeWorkingDirectory("backgrounds");
+            if (!backgroundDirCWD) {
+                throw new RuntimeException("No /backgrounds dir on the ftp server. Please create one");
+            }
+
+            FTPFile[] filesInBackgroundDir = client.listFiles();
+            boolean backgroundExists = Arrays.stream(filesInBackgroundDir)
+                    .anyMatch(ftpFile -> ftpFile.isFile()
+                            && ftpFile.getName().equals(backgroundName));
+
+            if (!backgroundExists) {
+                throw new RuntimeException("No " + backgroundName + " on the ftp server in the /backgrounds directory");
+            }
+        } catch (IOException e) {
+            logger.error("Can't create connection to the FTP server", e);
+        } finally {
+            if (client != null) {
+                client.quit();
+            }
+        }
+
     }
 
     /**
@@ -41,18 +95,11 @@ public class FTPFileGetter {
      * @return
      * @throws IOException
      */
-    private synchronized Map<String, String> getHashInfo() throws Exception {
+    private synchronized Map<String, String> getHashInfo() throws IOException {
         FTPClient client = null;
         Map<String, String> hashInfo = new HashMap<>();
         try {
-            client = new FTPClient();
-            if (isSameHostUsed) {
-                client.connect("localhost", ftpPort);
-            } else {
-                client.connect(ftpHost, ftpPort);
-            }
-            client.login(ftpUser, null);
-            client.setControlEncoding("UTF-8");
+            client = openFTPClient();
             List<String> allFilePath = getAllFilePath(client, "");
             for (String p: allFilePath) {
                 hashInfo.put(p, getMD5HashForFile(client, p));
@@ -60,7 +107,7 @@ public class FTPFileGetter {
             }
             isReady.set(true);
             logger.info("Hash info has been read successfully. Size = " + hashInfo.size());
-        } catch (Exception e) {
+        } catch (IOException e) {
             logger.error("Can't create connection to the FTP server", e);
         } finally {
             if (client != null) {
@@ -77,7 +124,7 @@ public class FTPFileGetter {
         }
     }
 
-    private List<String> getAllFilePath(FTPClient client, String dir) throws Exception {
+    private List<String> getAllFilePath(FTPClient client, String dir) throws IOException {
         List<String> ignoredFilesList = FilesInfo.getIgnoredFilesList();
 
         List<String> allFilePaths = new ArrayList<>();

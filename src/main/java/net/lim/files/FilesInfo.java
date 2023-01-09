@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class FilesInfo {
     private static List<String> ignoredFilesList = null;
@@ -28,7 +29,7 @@ public class FilesInfo {
         return jsonArrayIgnoredFiles;
     }
 
-    static List<String> getIgnoredFilesList() throws IOException, URISyntaxException {
+    static List<String> getIgnoredFilesList() throws IOException {
         if (ignoredFilesList == null) {
             createIgnoredFilesList();
         }
@@ -36,16 +37,21 @@ public class FilesInfo {
         return ignoredFilesList;
     }
 
-    private static void createIgnoredFilesList() throws IOException, URISyntaxException {
-        File ignoredDirsFile = new File(FilesInfo.class.getClassLoader().getResource(CONFIG_FILE_NAME).toURI());
-        List<String> ignoredDirs = new ArrayList<>();
-        try (BufferedReader fileReader = new BufferedReader(new FileReader(ignoredDirsFile))) {
-            while (fileReader.ready()) {
-                ignoredDirs.add(fileReader.readLine());
+    private static void createIgnoredFilesList() throws IOException {
+        try {
+            File ignoredDirsFile = new File(Objects.requireNonNull(
+                    FilesInfo.class.getClassLoader().getResource(CONFIG_FILE_NAME)).toURI());
+            List<String> ignoredDirs = new ArrayList<>();
+            try (BufferedReader fileReader = new BufferedReader(new FileReader(ignoredDirsFile))) {
+                while (fileReader.ready()) {
+                    ignoredDirs.add(fileReader.readLine());
+                }
             }
+            ignoredFilesList = ignoredDirs;
+            logger.info("Ignored files list created successfully, size = " + ignoredFilesList.size());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(".ignoredDirs resource missing or path is incorrect", e);
         }
-        ignoredFilesList = ignoredDirs;
-        logger.info("Ignored files list created successfully, size = " + ignoredFilesList.size());
     }
 }
 
