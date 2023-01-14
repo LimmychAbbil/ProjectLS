@@ -52,7 +52,8 @@ public class ConnectionFactory {
 
         int ftpPort = Integer.parseInt(connectionProperties.getProperty("ftp.port"));
         String ftpUser = connectionProperties.getProperty("ftp.username");
-        return new FTPFileGetter(ftpHost, ftpPort, ftpUser, isSameHostUsed);
+        boolean usePassive = "true".equals(connectionProperties.getProperty("ftp.usePassive"));
+        return new FTPFileGetter(ftpHost, ftpPort, ftpUser, isSameHostUsed, usePassive);
     }
 
     private String readConnectionType() {
