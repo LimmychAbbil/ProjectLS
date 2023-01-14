@@ -5,7 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.lim</groupId>
     <artifactId>ProjectLS</artifactId>
-    <version>0.04i</version>
+    <version>0.04j</version>
+
+    <properties>
+        <jersey.version>3.1.0</jersey.version>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -51,17 +55,17 @@
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet</artifactId>
-            <version>3.1.0</version>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.core</groupId>
             <artifactId>jersey-server</artifactId>
-            <version>3.1.0</version>
+            <version>${jersey.version}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
-            <version>3.1.0</version>
+            <version>${jersey.version}</version>
         </dependency>
 
         <dependency>

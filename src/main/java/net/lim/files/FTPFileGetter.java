@@ -20,14 +20,16 @@ public class FTPFileGetter {
     private final int ftpPort;
     private final String ftpUser;
     private boolean isSameHostUsed;
+    private boolean usePassive;
     private AtomicBoolean isReady = new AtomicBoolean(false);
     private static final Logger logger = LoggerFactory.getLogger(FTPFileGetter.class);
 
-    public FTPFileGetter(String ftpHost, int ftpPort, String ftpUser, boolean isSameHostUsed) {
+    public FTPFileGetter(String ftpHost, int ftpPort, String ftpUser, boolean isSameHostUsed, boolean usePassive) {
         this.ftpHost = ftpHost;
         this.ftpPort = ftpPort;
         this.ftpUser = ftpUser;
         this.isSameHostUsed = isSameHostUsed;
+        this.usePassive = usePassive;
         try {
             fullHashInfo = getHashInfo();
         } catch (IOException e) {
@@ -44,7 +46,6 @@ public class FTPFileGetter {
     private FTPClient openFTPClient() throws IOException {
         FTPClient client = new FTPClient();
 
-        client = new FTPClient();
         if (isSameHostUsed) {
             client.connect("localhost", ftpPort);
         } else {
@@ -52,6 +53,10 @@ public class FTPFileGetter {
         }
         client.login(ftpUser, null);
         client.setControlEncoding("UTF-8");
+
+        if (usePassive) {
+            client.enterLocalPassiveMode();
+        }
 
         return client;
     }
