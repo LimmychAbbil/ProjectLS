@@ -11,7 +11,7 @@ pipeline {
                 branch 'servlet4/forHeroku'
             }
             steps {
-                bat 'cd target; mvn heroku:deploy-war'
+                bat 'cd target && mvn heroku:deploy-war'
             }
         }
     }
