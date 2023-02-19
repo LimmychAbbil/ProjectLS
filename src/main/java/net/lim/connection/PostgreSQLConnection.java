@@ -50,6 +50,12 @@ public class PostgreSQLConnection implements Connection {
     }
 
     @Override
+    public void initCache() {
+        //nothing to do for now
+        //TODO cache login names
+    }
+
+    @Override
     public boolean login(String userName, String password) {
         try (java.sql.Connection connection = openConnection();
              PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + tableName + " WHERE login=?")) {

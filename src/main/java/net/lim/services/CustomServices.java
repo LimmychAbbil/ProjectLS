@@ -7,6 +7,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import net.lim.util.ConfigReader;
+import net.lim.util.VersionUtil;
 
 
 @Path("/")
@@ -19,7 +20,7 @@ public class CustomServices {
     @POST
     @Path("/versionCheck")
     public Response isVersionSupported(@FormParam("version") String version) {
-        boolean isVersionSupported = version.compareTo(ConfigReader.minVersionSupported) >= 0; //TODO stub
+        boolean isVersionSupported = VersionUtil.checkVersionSupported(version);
         if (isVersionSupported) {
             return Response.ok().build();
         } else {

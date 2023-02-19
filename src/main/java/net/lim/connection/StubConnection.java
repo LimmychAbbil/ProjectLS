@@ -4,6 +4,12 @@ package net.lim.connection;
  * For debug purposes, always return success result for any action
  */
 public class StubConnection implements Connection {
+
+    @Override
+    public void initCache() {
+        //nothing to do
+    }
+
     @Override
     public boolean testConnection() {
         return true;
