@@ -17,6 +17,7 @@ public class LServer extends HttpServlet {
         logger.info("Initializing server...");
         ConnectionFactory connectionFactory = new ConnectionFactory();
         connection = connectionFactory.createConnection();
+        connection.initCache();
         fileGetter = connectionFactory.createFTPGetter();
         logger.info("Server ready");
     }

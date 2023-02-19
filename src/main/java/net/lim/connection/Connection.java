@@ -1,6 +1,7 @@
 package net.lim.connection;
 
 public interface Connection {
+    void initCache();
     boolean testConnection();
     boolean login(String userName, String password);
 
