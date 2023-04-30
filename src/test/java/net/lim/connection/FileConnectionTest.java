@@ -1,5 +1,6 @@
 package net.lim.connection;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -17,10 +18,15 @@ public class FileConnectionTest {
     private FileConnection connection;
     private File dataFile = Mockito.mock(File.class);
 
+    @Before
+    public void setUp() {
+        connection = new FileConnection(dataFile);
+        connection.initCache();
+    }
+
     @Test
     public void testConnection() {
         Mockito.when(dataFile.exists()).thenReturn(true);
-        connection = new FileConnection(dataFile);
 
         boolean isConnected = connection.testConnection();
 
@@ -39,7 +45,7 @@ public class FileConnectionTest {
 
     @Test
     public void testLoginOK() throws Exception {
-        connection = new FileConnection(dataFile);
+
         FileReader mockedReader = Mockito.mock(FileReader.class);
         BufferedReader mockedBF = Mockito.mock(BufferedReader.class);
         PowerMockito.whenNew(FileReader.class).withArguments(dataFile).thenReturn(mockedReader);
@@ -55,7 +61,6 @@ public class FileConnectionTest {
 
     @Test
     public void testLoginFailed() throws Exception {
-        connection = new FileConnection(dataFile);
         FileReader mockedReader = Mockito.mock(FileReader.class);
         BufferedReader mockedBF = Mockito.mock(BufferedReader.class);
         PowerMockito.whenNew(FileReader.class).withAnyArguments().thenReturn(mockedReader);
@@ -70,8 +75,8 @@ public class FileConnectionTest {
 
     @Test
     public void testRegistrationFileNotFound() throws Exception {
-        connection = new FileConnection(dataFile);
         PowerMockito.whenNew(FileWriter.class).withArguments(dataFile, true).thenThrow(IOException.class);
+
         int isLogin = connection.register("a", "b");
 
         assertEquals(1, isLogin);
@@ -79,7 +84,6 @@ public class FileConnectionTest {
 
     @Test
     public void testRegistrationOK() throws Exception {
-        connection = new FileConnection(dataFile);
         FileWriter mockedWriter = Mockito.mock(FileWriter.class);
         PowerMockito.whenNew(FileWriter.class).withArguments(dataFile, true).thenReturn(mockedWriter);
 
