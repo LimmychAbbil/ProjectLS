@@ -45,7 +45,6 @@ public class FileConnectionTest {
 
     @Test
     public void testLoginOK() throws Exception {
-
         FileReader mockedReader = Mockito.mock(FileReader.class);
         BufferedReader mockedBF = Mockito.mock(BufferedReader.class);
         PowerMockito.whenNew(FileReader.class).withArguments(dataFile).thenReturn(mockedReader);

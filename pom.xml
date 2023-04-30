@@ -5,11 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.lim</groupId>
     <artifactId>ProjectLS</artifactId>
-    <version>0.05c</version>
+    <version>0.05d-heroku</version>
+    <packaging>war</packaging>
 
     <properties>
         <java.version>11</java.version>
-        <jersey.version>2.38</jersey.version>
+        <jersey.version>2.39.1</jersey.version>
         <heroku.appName>lserver</heroku.appName>
     </properties>
 
@@ -82,7 +83,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.5.1</version>
+            <version>42.5.4</version>
         </dependency>
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
