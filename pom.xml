@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.lim</groupId>
     <artifactId>ProjectLS</artifactId>
-    <version>0.05d-heroku</version>
+    <version>0.05e-heroku</version>
     <packaging>war</packaging>
 
     <properties>
@@ -103,12 +103,12 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.5</version>
+            <version>2.0.7</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>2.0.5</version>
+            <version>2.0.7</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -131,14 +131,6 @@
             <artifactId>powermock-module-junit4</artifactId>
             <version>2.0.9</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.easymock/easymock -->
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>5.1.0</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
 </project>
