@@ -24,6 +24,8 @@ public class FileConnection implements Connection {
 
     FileConnection (File file) {
         this.storageFile = file;
+        this.cachedUsers = new HashSet<>();
+        this.cacheUpdater = new CacheUpdater();
     }
 
     @Override
@@ -33,15 +35,12 @@ public class FileConnection implements Connection {
 
     @Override
     public void initCache() {
-        this.cachedUsers = new HashSet<>();
-        this.cacheUpdater = new CacheUpdater();
         this.cacheUpdater.start();
     }
 
     @Override
     public synchronized boolean login(String userName, String password) {
-        try (FileReader fileReader = new FileReader(storageFile);
-                BufferedReader reader = new BufferedReader(fileReader)){
+        try (BufferedReader reader = new BufferedReader(new FileReader(storageFile))){
             while (reader.ready()) {
                 String pair = reader.readLine();
                 if (pair.startsWith(userName)) {
@@ -49,7 +48,7 @@ public class FileConnection implements Connection {
                 }
             }
         } catch (IOException e) {
-            logger.error("IOException occurred when trying to login user {0}: " + e.getMessage(), userName);
+            logger.error("IOException occurred when trying to login user '{}': " + e.getMessage(), userName);
         }
 
         return false;
@@ -67,7 +66,7 @@ public class FileConnection implements Connection {
             this.cacheUpdater.needToRecalculate = true;
             return 0;
         } catch (IOException e) {
-            logger.error("IOException occurred when trying to register user {0}: " + e.getMessage(), userName);
+            logger.error("IOException occurred when trying to register user {}: " + e.getMessage(), userName);
         }
         return 1;
     }
@@ -96,7 +95,7 @@ public class FileConnection implements Connection {
                 writer.flush();
             }
         } catch (IOException e) {
-            logger.error("IOException occurred when trying to change password for user {0}: " + e.getMessage(), userName);
+            logger.error("IOException occurred when trying to change password for user {}: " + e.getMessage(), userName);
             return 1;
         }
         return 0;
@@ -105,12 +104,17 @@ public class FileConnection implements Connection {
     private class CacheUpdater extends Thread {
         private boolean needToRecalculate;
 
-        public CacheUpdater() {
+        private CacheUpdater() {
+            cachedUsers.clear();
             this.needToRecalculate = true;
         }
 
         @Override
         public void run() {
+            if (!testConnection()) {
+                logger.error("File " + storageFile + " doesn't exist, not running a cache updater");
+                return;
+            }
             while (true) {
                 if (needToRecalculate) {
                     logger.debug("Recalculating the cache...");

@@ -16,12 +16,11 @@ import static org.junit.Assert.*;
 @PrepareForTest(FileConnection.class)
 public class FileConnectionTest {
     private FileConnection connection;
-    private File dataFile = Mockito.mock(File.class);
+    private final File dataFile = Mockito.mock(File.class);
 
     @Before
     public void setUp() {
         connection = new FileConnection(dataFile);
-        connection.initCache();
     }
 
     @Test
