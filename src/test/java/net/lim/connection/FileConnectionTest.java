@@ -1,93 +1,98 @@
 package net.lim.connection;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.*;
 
-import static org.junit.Assert.*;
-
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(FileConnection.class)
 public class FileConnectionTest {
     private FileConnection connection;
     private final File dataFile = Mockito.mock(File.class);
 
-    @Before
-    public void setUp() {
-        connection = new FileConnection(dataFile);
-    }
-
     @Test
     public void testConnection() {
-        Mockito.when(dataFile.exists()).thenReturn(true);
+        try (MockedConstruction<FileReader> fileReaderMockedConstruction =
+                     Mockito.mockConstruction(FileReader.class);
+             MockedConstruction<BufferedReader> bufferedReaderMockedConstruction =
+                     Mockito.mockConstruction(BufferedReader.class)) {
+            Mockito.when(dataFile.exists()).thenReturn(true);
+            connection = new FileConnection(dataFile);
 
-        boolean isConnected = connection.testConnection();
+            boolean isConnected = connection.testConnection();
 
-        assertTrue(isConnected);
+            Assertions.assertTrue(isConnected);
+        }
     }
 
     @Test
     public void testLoginFileNotFound() {
         connection = new FileConnection("notExistingFile");
+
+        boolean isLogin = connection.login("a", "b");
+
+        Assertions.assertFalse(isLogin);
+    }
+
+    @Test
+    public void testLoginOK() {
+        try (MockedConstruction<FileReader> fileReaderMockedConstruction =
+                     Mockito.mockConstruction(FileReader.class);
+             MockedConstruction<BufferedReader> bufferedReaderMockedConstruction =
+                     Mockito.mockConstruction(BufferedReader.class, (mock, context) -> {
+                         Mockito.when(mock.ready()).thenReturn(true);
+                         Mockito.when(mock.readLine()).thenReturn("a:b");
+                     })) {
+            connection = new FileConnection(dataFile);
+
+            boolean isLogin = connection.login("a", "b");
+
+            Assertions.assertTrue(isLogin);
+        }
+    }
+
+    @Test
+    public void testLoginFailed() {
+        try (MockedConstruction<FileReader> fileReaderMockedConstruction =
+                     Mockito.mockConstruction(FileReader.class);
+             MockedConstruction<BufferedReader> bufferedReaderMockedConstruction =
+                     Mockito.mockConstruction(BufferedReader.class, (mock, context) ->
+                             Mockito.when(mock.ready()).thenReturn(false))) {
+            connection = new FileConnection(dataFile);
+
+            boolean isLogin = connection.login("a", "b");
+
+            Assertions.assertFalse(isLogin);
+        }
+    }
+
+    @Test
+    public void testRegistrationFileNotFound() {
+        try (MockedConstruction<FileWriter> fileWriterMockedConstruction =
+                     Mockito.mockConstruction(FileWriter.class, (mock, context) ->
+                             Mockito.doThrow(IOException.class).when(mock).write(Mockito.anyString()))) {
+            connection = new FileConnection(dataFile);
+            int isLogin = connection.register("a", "b");
+
+            Assertions.assertEquals(1, isLogin);
+        }
+    }
+
+    @Test
+    public void testRegistrationOK() {
+        try (MockedConstruction<FileWriter> fileWriterMockedConstruction =
+                     Mockito.mockConstruction(FileWriter.class)) {
+            connection = new FileConnection(dataFile);
+            int registrationResponse = connection.register("a", "b");
+
+            Assertions.assertEquals(0, registrationResponse);
+        }
+    }
+
+    @AfterEach
+    public void resetMocks() {
         Mockito.reset();
-
-        boolean isLogin = connection.login("a", "b");
-
-        assertFalse(isLogin);
-    }
-
-    @Test
-    public void testLoginOK() throws Exception {
-
-        FileReader mockedReader = Mockito.mock(FileReader.class);
-        BufferedReader mockedBF = Mockito.mock(BufferedReader.class);
-        PowerMockito.whenNew(FileReader.class).withArguments(dataFile).thenReturn(mockedReader);
-        PowerMockito.whenNew(BufferedReader.class).withArguments(mockedReader).thenReturn(mockedBF);
-
-        Mockito.when(mockedBF.ready()).thenReturn(true, false);
-        Mockito.when(mockedBF.readLine()).thenReturn("a:b");
-
-        boolean isLogin = connection.login("a", "b");
-
-        assertTrue(isLogin);
-    }
-
-    @Test
-    public void testLoginFailed() throws Exception {
-        FileReader mockedReader = Mockito.mock(FileReader.class);
-        BufferedReader mockedBF = Mockito.mock(BufferedReader.class);
-        PowerMockito.whenNew(FileReader.class).withAnyArguments().thenReturn(mockedReader);
-        PowerMockito.whenNew(BufferedReader.class).withArguments(mockedReader).thenReturn(mockedBF);
-
-        Mockito.when(mockedBF.ready()).thenReturn(false);
-
-        boolean isLogin = connection.login("a", "b");
-
-        assertFalse(isLogin);
-    }
-
-    @Test
-    public void testRegistrationFileNotFound() throws Exception {
-        PowerMockito.whenNew(FileWriter.class).withArguments(dataFile, true).thenThrow(IOException.class);
-
-        int isLogin = connection.register("a", "b");
-
-        assertEquals(1, isLogin);
-    }
-
-    @Test
-    public void testRegistrationOK() throws Exception {
-        FileWriter mockedWriter = Mockito.mock(FileWriter.class);
-        PowerMockito.whenNew(FileWriter.class).withArguments(dataFile, true).thenReturn(mockedWriter);
-
-        int registrationResponse = connection.register("a", "b");
-
-        assertEquals(0, registrationResponse);
     }
 }
