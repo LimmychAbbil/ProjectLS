@@ -1,20 +1,13 @@
 package net.lim.connection;
 
 import net.lim.util.ConfigReader;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Properties;
 
-import static org.junit.Assert.assertTrue;
-
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(ConfigReader.class)
 public class ConnectionFactoryTest {
     private Properties mockedProps;
 
@@ -23,12 +16,13 @@ public class ConnectionFactoryTest {
     public void testCreateStubConnection() {
         mockedProps = Mockito.mock(Properties.class);
         Mockito.when(mockedProps.getProperty("connection.type")).thenReturn("stub");
-        PowerMockito.mockStatic(ConfigReader.class);
-        PowerMockito.when(ConfigReader.loadProperties()).thenReturn(mockedProps);
+        try (MockedStatic<ConfigReader> mockedStatic = Mockito.mockStatic(ConfigReader.class)) {
+            mockedStatic.when(ConfigReader::loadProperties).thenReturn(mockedProps);
 
-        Connection connection = new ConnectionFactory().createConnection();
+            Connection connection = new ConnectionFactory().createConnection();
 
-        assertTrue(connection instanceof StubConnection);
+            Assertions.assertTrue(connection instanceof StubConnection);
+        }
 
     }
 
@@ -37,12 +31,13 @@ public class ConnectionFactoryTest {
         mockedProps = Mockito.mock(Properties.class);
         Mockito.when(mockedProps.getProperty("connection.type")).thenReturn("file");
         Mockito.when(mockedProps.getProperty("storage.file")).thenReturn("someFileName");
-        PowerMockito.mockStatic(ConfigReader.class);
-        PowerMockito.when(ConfigReader.loadProperties()).thenReturn(mockedProps);
+        try (MockedStatic<ConfigReader> mockedStatic = Mockito.mockStatic(ConfigReader.class)) {
+            mockedStatic.when(ConfigReader::loadProperties).thenReturn(mockedProps);
 
-        Connection connection = new ConnectionFactory().createConnection();
+            Connection connection = new ConnectionFactory().createConnection();
 
-        assertTrue(connection instanceof FileConnection);
+            Assertions.assertTrue(connection instanceof FileConnection);
+        }
     }
 
     @Test
@@ -55,34 +50,34 @@ public class ConnectionFactoryTest {
         Mockito.when(mockedProps.getProperty("connection.username")).thenReturn("someUser");
         Mockito.when(mockedProps.getProperty("connection.password")).thenReturn("somePass");
 
-        PowerMockito.mockStatic(ConfigReader.class);
-        PowerMockito.when(ConfigReader.loadProperties()).thenReturn(mockedProps);
+        try (MockedStatic<ConfigReader> mockedStatic = Mockito.mockStatic(ConfigReader.class)) {
+            mockedStatic.when(ConfigReader::loadProperties).thenReturn(mockedProps);
 
-        Connection connection = new ConnectionFactory().createConnection();
+            Connection connection = new ConnectionFactory().createConnection();
 
-        assertTrue(connection instanceof PostgreSQLConnection);
+            Assertions.assertTrue(connection instanceof PostgreSQLConnection);
+        }
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testNotConnectionCreatedForInvalidType() {
         mockedProps = Mockito.mock(Properties.class);
         Mockito.when(mockedProps.getProperty("connection.type")).thenReturn("blah-blah");
-        PowerMockito.mockStatic(ConfigReader.class);
-        PowerMockito.when(ConfigReader.loadProperties()).thenReturn(mockedProps);
+        try (MockedStatic<ConfigReader> mockedStatic = Mockito.mockStatic(ConfigReader.class)) {
+            mockedStatic.when(ConfigReader::loadProperties).thenReturn(mockedProps);
 
-        new ConnectionFactory().createConnection();
-
-        Assert.fail();
+            Assertions.assertThrows(RuntimeException.class, () -> new ConnectionFactory().createConnection());
+        }
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void testNotConnectionCreatedForInvalidConfig() {
         mockedProps = Mockito.mock(Properties.class);
-        PowerMockito.mockStatic(ConfigReader.class);
-        PowerMockito.when(ConfigReader.loadProperties()).thenReturn(mockedProps);
+        try (MockedStatic<ConfigReader> mockedStatic = Mockito.mockStatic(ConfigReader.class)) {
+            mockedStatic.when(ConfigReader::loadProperties).thenReturn(mockedProps);
 
-        new ConnectionFactory().createConnection();
+            Assertions.assertThrows(RuntimeException.class, () -> new ConnectionFactory().createConnection());
 
-        Assert.fail();
+        }
     }
 }

@@ -1,13 +1,13 @@
 package net.lim.connection;
 
-import org.junit.Before;
-import org.junit.Test;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class StubConnectionTest {
     private StubConnection connection;
-    @Before
+    @BeforeEach
     public void setUp() {
         connection = new StubConnection();
     }
@@ -16,7 +16,7 @@ public class StubConnectionTest {
     public void testConnectionShouldAlwaysReturnTrue() {
         boolean isConnectionOK = connection.testConnection();
 
-        assertTrue(isConnectionOK);
+        Assertions.assertTrue(isConnectionOK);
     }
 
     @Test
@@ -25,7 +25,7 @@ public class StubConnectionTest {
         String somePassword = "password";
         boolean loginOK = connection.login(someUserName, somePassword);
 
-        assertTrue(loginOK);
+        Assertions.assertTrue(loginOK);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class StubConnectionTest {
 
         int registrationResult = connection.register(someUserName, somePassword);
 
-        assertEquals(0, registrationResult);
+        Assertions.assertEquals(0, registrationResult);
     }
 
 }
