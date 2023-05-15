@@ -7,9 +7,9 @@ public class VersionUtil {
     private static final String minSupportedSubVersion;
 
     static {
-        minSupportedMajor = getMajorVersionFromVersionString(ConfigReader.minVersionSupported);
-        minSupportedMinor = getMinorVersionFromVersionString(ConfigReader.minVersionSupported);
-        minSupportedSubVersion = getSubVersionFromVersionString(ConfigReader.minVersionSupported);
+        minSupportedMajor = getMajorVersionFromVersionString(ConfigReader.getMinVersionSupported());
+        minSupportedMinor = getMinorVersionFromVersionString(ConfigReader.getMinVersionSupported());
+        minSupportedSubVersion = getSubVersionFromVersionString(ConfigReader.getMinVersionSupported());
     }
 
 
@@ -18,8 +18,10 @@ public class VersionUtil {
         int minorVersion = getMinorVersionFromVersionString(clientVersion);
         String subVersion = getSubVersionFromVersionString(clientVersion);
         if (majorVersion < minSupportedMajor) return false;
-        else if (minorVersion < minSupportedMinor) return false;
-        else return isSubVersionGreaterThenMin(subVersion);
+        else if (majorVersion == minSupportedMajor && minorVersion < minSupportedMinor) return false;
+        else if (majorVersion == minSupportedMajor && minorVersion == minSupportedMinor) {
+            return isSubVersionGreaterThenMin(subVersion);
+        } else return true;
     }
 
 
@@ -29,16 +31,27 @@ public class VersionUtil {
     }
 
     private static int getMinorVersionFromVersionString(String version) {
-        return Integer.parseInt(
-                version.substring(version.indexOf(".") + 1, findFirstLetterOccurence(version)));
+        int firstLetterOccurrence = findFirstLetterOccurrence(version);
+        if (firstLetterOccurrence == -1) {
+            return Integer.parseInt(
+                    version.substring(version.indexOf(".") + 1));
+        } else {
+            return Integer.parseInt(
+                    version.substring(version.indexOf(".") + 1, firstLetterOccurrence));
+        }
 
     }
 
     private static String getSubVersionFromVersionString(String version) {
-        return version.substring(findFirstLetterOccurence(version));
+        int firstLetterOccurrence = findFirstLetterOccurrence(version);
+        if (firstLetterOccurrence == -1) {
+            return "";
+        } else {
+            return version.substring(findFirstLetterOccurrence(version));
+        }
     }
 
-    private static int findFirstLetterOccurence(String version) {
+    private static int findFirstLetterOccurrence(String version) {
         for (int i = 0; i < version.length(); i++) {
             if (Character.isLetter(version.charAt(i))) {
                 return i;

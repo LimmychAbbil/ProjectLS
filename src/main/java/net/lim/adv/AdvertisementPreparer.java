@@ -1,5 +1,6 @@
 package net.lim.adv;
 
+import net.lim.util.ResourceProvider;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
@@ -7,10 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 public class AdvertisementPreparer {
@@ -18,7 +18,7 @@ public class AdvertisementPreparer {
     private static String advsFilePath;
 
     static {
-        URL advsFileResource = AdvertisementPreparer.class.getClassLoader().getResource("advs.txt");
+        URI advsFileResource = ResourceProvider.getURIForResourceFile("advs.txt");
         if (advsFileResource != null) {
             advsFilePath = advsFileResource.getPath();
         }
@@ -30,7 +30,7 @@ public class AdvertisementPreparer {
         } else {
             File advsFile = new File(advsFilePath);
             JSONArray array = new JSONArray();
-            try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(advsFile), StandardCharsets.UTF_8))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(advsFile, StandardCharsets.UTF_8))) {
                 while (br.ready()) {
                     String advLine = br.readLine();
                     if (!advLine.startsWith("#") && !advLine.isEmpty()) {
