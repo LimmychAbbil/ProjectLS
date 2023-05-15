@@ -3,17 +3,23 @@ package net.lim.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Properties;
 
 public class ConfigReader {
 
     private static final String CONFIG_FILE_NAME = "configuration.ini";
-    private static Properties properties = loadProperties();
-    public static final String minVersionSupported = properties.getProperty("client.minVersion", "0.01a");
+    private static final Properties properties = loadProperties();
+
+    private static final String minVersionSupported = properties.getProperty("client.minVersion", "0.01a");
+
+    public static String getMinVersionSupported() {
+        return minVersionSupported;
+    }
 
     public static File checkConfigExists() {
         try {
-            File file = new File(ConfigReader.class.getClassLoader().getResource(CONFIG_FILE_NAME).toURI());
+            File file = new File(Objects.requireNonNull(ResourceProvider.getURIForResourceFile(CONFIG_FILE_NAME)));
             if (!file.exists()) {
                 throw new RuntimeException("No config file found. Please check " + CONFIG_FILE_NAME + " exists.");
             }
