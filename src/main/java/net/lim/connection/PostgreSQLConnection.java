@@ -144,7 +144,8 @@ public class PostgreSQLConnection implements Connection {
         return userNameInUse;
     }
 
-    private static byte[] addSaltToPass(String password, byte[] salt) {
+    //TODO move to another util class to support another DBs as well
+    protected static byte[] addSaltToPass(String password, byte[] salt) {
         StringBuilder sb = new StringBuilder();
         try {
             MessageDigest md = MessageDigest.getInstance("SHA");
