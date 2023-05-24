@@ -1,5 +1,6 @@
 package net.lim.token;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -17,6 +18,8 @@ public class TokenUtils {
     }
 
     public static boolean verifyToken(String userName, byte[] tokenBytes) {
-        return issuedTokens.containsKey(userName) && issuedTokens.get(userName).equals(tokenBytes) && !issuedTokens.get(userName).isExpired();
+        return issuedTokens.containsKey(userName)
+                && Arrays.equals(issuedTokens.get(userName).getTokenValue(), tokenBytes)
+                && !issuedTokens.get(userName).isExpired();
     }
 }

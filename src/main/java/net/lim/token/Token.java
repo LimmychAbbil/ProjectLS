@@ -26,7 +26,7 @@ public class Token {
     }
 
     public boolean isExpired() {
-        return LocalDateTime.now().isBefore(expiredTime);
+        return LocalDateTime.now().isAfter(expiredTime);
     }
 
     private byte[] generateTokenValue() {

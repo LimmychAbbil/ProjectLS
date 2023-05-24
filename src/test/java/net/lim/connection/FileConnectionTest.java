@@ -91,6 +91,59 @@ public class FileConnectionTest {
         }
     }
 
+    @Test
+    public void testChangePassOK() {
+        try (MockedConstruction<FileReader> fileReaderMockedConstruction =
+                     Mockito.mockConstruction(FileReader.class);
+             MockedConstruction<BufferedReader> bufferedReaderMockedConstruction =
+                     Mockito.mockConstruction(BufferedReader.class, (mock, context) -> {
+                         Mockito.when(mock.ready()).thenReturn(true, false);
+                         Mockito.when(mock.readLine()).thenReturn("a:b");
+                     });
+             MockedConstruction<FileWriter> fileWriterMockedConstruction =
+                     Mockito.mockConstruction(FileWriter.class)) {
+            connection = new FileConnection(dataFile);
+            int changePasswordResponse = connection.changePassword("a", "c");
+
+            Assertions.assertEquals(0, changePasswordResponse);
+        }
+    }
+
+    @Test
+    public void testChangePassForNotExistingUser() {
+        try (MockedConstruction<FileReader> fileReaderMockedConstruction =
+                     Mockito.mockConstruction(FileReader.class);
+             MockedConstruction<BufferedReader> bufferedReaderMockedConstruction =
+                     Mockito.mockConstruction(BufferedReader.class, (mock, context) -> {
+                         Mockito.when(mock.ready()).thenReturn(true, false);
+                         Mockito.when(mock.readLine()).thenReturn("a:b");
+                     });
+             MockedConstruction<FileWriter> fileWriterMockedConstruction =
+                     Mockito.mockConstruction(FileWriter.class)) {
+            connection = new FileConnection(dataFile);
+            int changePasswordResponse = connection.changePassword("b", "c");
+
+            Assertions.assertEquals(2, changePasswordResponse);
+        }
+    }
+
+    @Test
+    public void testChangePassThrowsAnException() {
+        try (MockedConstruction<FileReader> fileReaderMockedConstruction =
+                     Mockito.mockConstruction(FileReader.class);
+             MockedConstruction<BufferedReader> bufferedReaderMockedConstruction =
+                     Mockito.mockConstruction(BufferedReader.class, (mock, context) -> {
+                         Mockito.when(mock.ready()).thenThrow(IOException.class);
+                     });
+             MockedConstruction<FileWriter> fileWriterMockedConstruction =
+                     Mockito.mockConstruction(FileWriter.class)) {
+            connection = new FileConnection(dataFile);
+            int changePasswordResponse = connection.changePassword("b", "c");
+
+            Assertions.assertEquals(1, changePasswordResponse);
+        }
+    }
+
     @AfterEach
     public void resetMocks() {
         Mockito.reset();
