@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.lim</groupId>
     <artifactId>ProjectLS</artifactId>
-    <version>0.05i</version>
+    <version>0.05j</version>
 
     <properties>
         <jersey.version>3.1.2</jersey.version>
