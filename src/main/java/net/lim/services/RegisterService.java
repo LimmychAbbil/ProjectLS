@@ -13,10 +13,10 @@ public class RegisterService {
 
     @POST
     public Response register(@FormParam("userName") String userName, @FormParam("pass") String password) {
-        if (LServer.connection == null) {
+        if (LServer.getConnection() == null) {
             return Response.status(500).entity("Server not ready").build();
         }
-        int code = LServer.connection.register(userName, password);
+        int code = LServer.getConnection().register(userName, password);
         if (code == 0) {
             return Response.status(200).build();
         } else if (code == 2){

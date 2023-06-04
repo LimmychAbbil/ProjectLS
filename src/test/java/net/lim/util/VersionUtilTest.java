@@ -2,11 +2,13 @@ package net.lim.util;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-class VersionUtilTest {
+@Order(2)
+public class VersionUtilTest {
     private final static String TEST_MIN_SUPPORTED_VERSION = "2.05c";
 
     @BeforeAll

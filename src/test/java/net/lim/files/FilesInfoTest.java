@@ -7,9 +7,9 @@ import org.mockito.Mockito;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Order(0)
 public class FilesInfoTest {
 
     @BeforeAll
