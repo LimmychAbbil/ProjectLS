@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -39,7 +40,7 @@ public class FTPFileGetter {
         try {
             validateCurrentBackground();
         } catch (IOException e) {
-            throw new RuntimeException("Can't validate background on ftp server");
+            throw new RuntimeException("Can't validate background on ftp server", e);
         }
     }
 
@@ -124,7 +125,8 @@ public class FTPFileGetter {
 
     private String getMD5HashForFile(FTPClient client, String fileName) throws IOException {
         //encoding fix
-        try (InputStream is = client.retrieveFileStream(new String(fileName.getBytes("UTF-8"), "ISO-8859-1"))) {
+        try (InputStream is = client.retrieveFileStream(
+                new String(fileName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1))) { //why 2 charsets?
             return DigestUtils.md5Hex(is);
         }
     }

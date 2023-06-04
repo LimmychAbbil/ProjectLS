@@ -17,18 +17,19 @@ public class LoginService {
     @Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
     public Response login(@FormParam("userName") String userName, @FormParam("pass") String password) {
         JSONObject entityJSON = new JSONObject();
-        if (LServer.connection == null) {
+        if (LServer.getConnection() == null) {
             entityJSON.put("message", "Server not ready");
-            return Response.status(500).entity(entityJSON.toJSONString()).build();
+            return Response.serverError().entity(entityJSON.toJSONString()).build();
         }
-        if (LServer.connection.login(userName, password)) {
+        if (LServer.getConnection().login(userName, password)) {
             Token token = TokenUtils.issueToken(userName);
             entityJSON.put("message", "OK");
             entityJSON.put("tokenHash", new String(token.getTokenValue()));
-            return Response.status(200).entity(entityJSON.toJSONString()).build();
+            return Response.ok().entity(entityJSON.toJSONString()).build();
         } else {
             entityJSON.put("message", "Login failed");
-            return Response.status(401).entity(entityJSON.toJSONString()).build();
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(entityJSON.toJSONString()).build();
         }
     }
 }

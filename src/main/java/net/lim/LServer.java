@@ -9,9 +9,17 @@ import org.slf4j.LoggerFactory;
 
 
 public class LServer extends HttpServlet {
-    public static Connection connection;
-    public static FTPFileGetter fileGetter;
+    private static Connection connection;
+    private static FTPFileGetter fileGetter;
     private static final Logger logger = LoggerFactory.getLogger(LServer.class);
+
+    public static Connection getConnection() {
+        return connection;
+    }
+
+    public static FTPFileGetter getFileGetter() {
+        return fileGetter;
+    }
 
     public void init() {
         logger.info("Initializing server...");

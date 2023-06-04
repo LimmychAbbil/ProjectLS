@@ -17,7 +17,7 @@ public class FileServices {
     @Path("/serverInfo")
     public Response getFTPServerInfo() {
 
-        return Response.ok(LServer.fileGetter.getFTPServerInfoJSON().toJSONString(), MediaType.APPLICATION_JSON).build();
+        return Response.ok(LServer.getFileGetter().getFTPServerInfoJSON().toJSONString(), MediaType.APPLICATION_JSON).build();
     }
 
     @GET
@@ -32,9 +32,9 @@ public class FileServices {
     @GET
     @Path("/hash")
     public Response getHashInfo() {
-        if (!LServer.fileGetter.isReady()) {
+        if (!LServer.getFileGetter().isReady()) {
             return Response.serverError().entity("Server not ready").build();
         }
-        return Response.ok(LServer.fileGetter.getFullHashInfoJSON().toJSONString(), MediaType.APPLICATION_JSON).build();
+        return Response.ok(LServer.getFileGetter().getFullHashInfoJSON().toJSONString(), MediaType.APPLICATION_JSON).build();
     }
 }

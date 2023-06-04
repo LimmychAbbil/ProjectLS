@@ -21,7 +21,7 @@ public class PasswordService {
     public Response changePassAdm(@FormParam("userName") String userName, @FormParam("userName") String newPass, @Context HttpServletRequest request) {
         String remoteAddr = request.getRemoteAddr();
         if ("0:0:0:0:0:0:0:1".equals(remoteAddr) || ("localhost".equals(remoteAddr)) || ("127.0.0.1".equals(remoteAddr))) {
-            int result = LServer.connection.changePassword(userName, newPass);
+            int result = LServer.getConnection().changePassword(userName, newPass);
             switch (result) {
                 case 0:
                     return Response.ok().build(); //TODO redirect to LSA main
