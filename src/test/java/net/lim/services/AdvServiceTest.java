@@ -1,6 +1,6 @@
 package net.lim.services;
 
-import jakarta.ws.rs.core.Response;
+import javax.ws.rs.core.Response;
 import net.lim.adv.AdvertisementPreparer;
 import org.json.simple.JSONObject;
 import org.junit.jupiter.api.Assertions;

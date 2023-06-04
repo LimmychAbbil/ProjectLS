@@ -1,6 +1,6 @@
 package net.lim.services;
 
-import jakarta.ws.rs.core.Response;
+import javax.ws.rs.core.Response;
 import net.lim.adv.AdvertisementPreparer;
 import net.lim.util.JsonResponseUtil;
 import org.json.simple.JSONObject;

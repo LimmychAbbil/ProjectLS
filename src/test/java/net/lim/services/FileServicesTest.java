@@ -1,6 +1,6 @@
 package net.lim.services;
 
-import jakarta.ws.rs.core.Response;
+import javax.ws.rs.core.Response;
 import net.lim.LServer;
 import net.lim.files.FTPFileGetter;
 import net.lim.files.FilesInfo;
