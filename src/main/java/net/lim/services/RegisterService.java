@@ -14,13 +14,13 @@ public class RegisterService {
     @POST
     public Response register(@FormParam("userName") String userName, @FormParam("pass") String password) {
         if (LServer.getConnection() == null) {
-            return Response.status(500).entity("Server not ready").build();
+            return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Server not ready").build();
         }
         int code = LServer.getConnection().register(userName, password);
         if (code == 0) {
-            return Response.status(200).build();
+            return Response.status(Response.Status.OK).build();
         } else if (code == 2){
-            return Response.status(507).entity("UserName already in use").build();
-        } else return Response.status(401).entity("Registration failed").build();
+            return Response.status(Response.Status.CONFLICT).entity("Username already in use").build();
+        } else return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Registration failed").build();
     }
 }

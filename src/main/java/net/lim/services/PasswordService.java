@@ -29,9 +29,9 @@ public class PasswordService {
             switch (result) {
                 case 0:
                     return Response.ok().build(); //TODO redirect to LSA main
-                case 1: return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
                 case 2: return Response.status(Response.Status.NOT_FOUND).build();
-                default: return null;
+                case 1:
+                default: return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }
         } else {
             return Response.status(Response.Status.FORBIDDEN).build();
