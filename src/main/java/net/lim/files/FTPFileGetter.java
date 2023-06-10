@@ -52,7 +52,7 @@ public class FTPFileGetter {
         } else {
             client.connect(ftpHost, ftpPort);
         }
-        client.login(ftpUser, null);
+        client.login(ftpUser, "rNrKYTX9g7z3RgJRmxWuGHbeu");
         client.setControlEncoding("UTF-8");
 
         if (usePassive) {
