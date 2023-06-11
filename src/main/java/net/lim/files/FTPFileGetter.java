@@ -2,6 +2,7 @@ package net.lim.files;
 
 import net.lim.util.ConfigReader;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.json.simple.JSONObject;
@@ -108,6 +109,7 @@ public class FTPFileGetter {
         Map<String, String> hashInfo = new HashMap<>();
         try {
             client = openFTPClient();
+            client.setFileType(FTP.BINARY_FILE_TYPE);
             List<String> allFilePath = getAllFilePath(client, "");
             for (String p: allFilePath) {
                 hashInfo.put(p, getMD5HashForFile(client, p));
@@ -128,7 +130,9 @@ public class FTPFileGetter {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
             client.retrieveFile(new String(fileName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1),
                     byteArrayOutputStream);
-            return DigestUtils.md5Hex(byteArrayOutputStream.toByteArray());
+            byte[] array = byteArrayOutputStream.toByteArray();
+            logger.debug("Byte array size for file " + fileName + " is " + array.length);
+            return DigestUtils.md5Hex(array);
         }
     }
 
