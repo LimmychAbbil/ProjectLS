@@ -8,9 +8,11 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -109,7 +111,6 @@ public class FTPFileGetter {
             List<String> allFilePath = getAllFilePath(client, "");
             for (String p: allFilePath) {
                 hashInfo.put(p, getMD5HashForFile(client, p));
-                client.completePendingCommand();
             }
             isReady.set(true);
             logger.info("Hash info has been read successfully. Size = " + hashInfo.size());
@@ -124,10 +125,10 @@ public class FTPFileGetter {
     }
 
     private String getMD5HashForFile(FTPClient client, String fileName) throws IOException {
-        //encoding fix
-        try (InputStream is = client.retrieveFileStream(
-                new String(fileName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1))) { //why 2 charsets?
-            return DigestUtils.md5Hex(is);
+        try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            client.retrieveFile(new String(fileName.getBytes(StandardCharsets.UTF_8), StandardCharsets.ISO_8859_1),
+                    byteArrayOutputStream);
+            return DigestUtils.md5Hex(byteArrayOutputStream.toByteArray());
         }
     }
 
