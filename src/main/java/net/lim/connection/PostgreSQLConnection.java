@@ -35,6 +35,7 @@ public class PostgreSQLConnection implements Connection {
 
     }
 
+    //TODO do not commit to the db on every healthcheck
     @Override
     public boolean testConnection() {
         try (java.sql.Connection connection = openConnection()) {

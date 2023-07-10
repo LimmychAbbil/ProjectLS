@@ -6,13 +6,22 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import net.lim.LServer;
 import net.lim.util.VersionUtil;
 
 
 @Path("/")
 public class CustomServices {
+
     @GET
-    public Response ping() {
+    public Response healthCheck() {
+        if (LServer.getConnection() == null) {
+            return Response.serverError().entity("Server can not establish database connection").build();
+        }
+
+        if (!LServer.getFileGetter().isReady()) {
+            return Response.serverError().entity("Server not established file connection yet").build();
+        }
         return Response.ok().build();
     }
 
