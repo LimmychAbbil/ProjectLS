@@ -1,6 +1,7 @@
 package net.lim.services;
 
 
+import net.lim.LServer;
 import net.lim.util.ConfigReader;
 import net.lim.util.VersionUtil;
 
@@ -14,8 +15,16 @@ import javax.ws.rs.core.Response;
 
 @Path("/")
 public class CustomServices {
+
     @GET
-    public Response ping() {
+    public Response healthCheck() {
+        if (LServer.getConnection() == null) {
+            return Response.serverError().entity("Server can not establish database connection").build();
+        }
+
+        if (!LServer.getFileGetter().isReady()) {
+            return Response.serverError().entity("Server not established file connection yet").build();
+        }
         return Response.ok().build();
     }
 

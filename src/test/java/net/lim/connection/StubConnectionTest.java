@@ -38,4 +38,11 @@ public class StubConnectionTest {
         Assertions.assertEquals(0, registrationResult);
     }
 
+    @Test
+    public void testChangePasswordReturnZero() {
+        int result = connection.changePassword("any", "any");
+
+        Assertions.assertEquals(0, result);
+    }
+
 }

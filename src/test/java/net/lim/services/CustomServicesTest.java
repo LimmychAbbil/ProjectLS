@@ -1,6 +1,10 @@
 package net.lim.services;
 
 import javax.ws.rs.core.Response;
+
+import net.lim.LServer;
+import net.lim.connection.Connection;
+import net.lim.files.FTPFileGetter;
 import net.lim.util.VersionUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +21,42 @@ public class CustomServicesTest {
     }
 
     @Test
-    public void testPingService() {
-        try (Response pingResponse = customServices.ping()) {
-            Assertions.assertEquals(200, pingResponse.getStatus());
+    public void testPingServiceOKWhenEverythingIsReady() {
+        try (MockedStatic<LServer> mockedStatic = Mockito.mockStatic(LServer.class)) {
+            Connection mockedConnection = Mockito.mock();
+            FTPFileGetter mockedFileGetter = Mockito.mock();
+            Mockito.when(mockedFileGetter.isReady()).thenReturn(true);
+            mockedStatic.when(LServer::getConnection).thenReturn(mockedConnection);
+            mockedStatic.when(LServer::getFileGetter).thenReturn(mockedFileGetter);
+            try (Response pingResponse = customServices.healthCheck()) {
+                Assertions.assertEquals(200, pingResponse.getStatus());
+            }
+        }
+    }
+
+    @Test
+    public void testPingServiceNotOKWhenConnectionIsNull() {
+        try (MockedStatic<LServer> mockedStatic = Mockito.mockStatic(LServer.class)) {
+            FTPFileGetter mockedFileGetter = Mockito.mock();
+            Mockito.when(mockedFileGetter.isReady()).thenReturn(true);
+            mockedStatic.when(LServer::getFileGetter).thenReturn(mockedFileGetter);
+            try (Response pingResponse = customServices.healthCheck()) {
+                Assertions.assertEquals(500, pingResponse.getStatus());
+            }
+        }
+    }
+
+    @Test
+    public void testPingServiceNotOKWhenFileGetterNotReady() {
+        try (MockedStatic<LServer> mockedStatic = Mockito.mockStatic(LServer.class)) {
+            Connection mockedConnection = Mockito.mock();
+            FTPFileGetter mockedFileGetter = Mockito.mock();
+            Mockito.when(mockedFileGetter.isReady()).thenReturn(false);
+            mockedStatic.when(LServer::getConnection).thenReturn(mockedConnection);
+            mockedStatic.when(LServer::getFileGetter).thenReturn(mockedFileGetter);
+            try (Response pingResponse = customServices.healthCheck()) {
+                Assertions.assertEquals(500, pingResponse.getStatus());
+            }
         }
     }
 
