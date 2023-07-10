@@ -2,7 +2,7 @@ FROM jetty:11.0.15-jdk11
 USER root
 
 #Install maven
-ARG MAVEN_VERSION=3.9.2
+ARG MAVEN_VERSION=3.9.3
 RUN mkdir /maven
 RUN cd /maven && wget https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
 RUN cd /maven && tar xzvf apache-maven-${MAVEN_VERSION}-bin.tar.gz && rm apache-maven-${MAVEN_VERSION}-bin.tar.gz
