@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.lim</groupId>
     <artifactId>ProjectLS</artifactId>
-    <version>0.05l-heroku</version>
+    <version>0.05m-heroku</version>
     <packaging>war</packaging>
 
     <properties>

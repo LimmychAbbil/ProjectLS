@@ -17,7 +17,7 @@ public class ConnectionFactoryTest {
         mockedProps = Mockito.mock(Properties.class);
         Mockito.when(mockedProps.getProperty("connection.type")).thenReturn("stub");
         try (MockedStatic<ConfigReader> mockedStatic = Mockito.mockStatic(ConfigReader.class)) {
-            mockedStatic.when(ConfigReader::loadProperties).thenReturn(mockedProps);
+            mockedStatic.when(ConfigReader::loadDefaultProperties).thenReturn(mockedProps);
 
             Connection connection = new ConnectionFactory().createConnection();
 
@@ -32,7 +32,7 @@ public class ConnectionFactoryTest {
         Mockito.when(mockedProps.getProperty("connection.type")).thenReturn("file");
         Mockito.when(mockedProps.getProperty("storage.file")).thenReturn("someFileName");
         try (MockedStatic<ConfigReader> mockedStatic = Mockito.mockStatic(ConfigReader.class)) {
-            mockedStatic.when(ConfigReader::loadProperties).thenReturn(mockedProps);
+            mockedStatic.when(ConfigReader::loadDefaultProperties).thenReturn(mockedProps);
 
             Connection connection = new ConnectionFactory().createConnection();
 
@@ -51,7 +51,7 @@ public class ConnectionFactoryTest {
         Mockito.when(mockedProps.getProperty("connection.password")).thenReturn("somePass");
 
         try (MockedStatic<ConfigReader> mockedStatic = Mockito.mockStatic(ConfigReader.class)) {
-            mockedStatic.when(ConfigReader::loadProperties).thenReturn(mockedProps);
+            mockedStatic.when(ConfigReader::loadDefaultProperties).thenReturn(mockedProps);
 
             Connection connection = new ConnectionFactory().createConnection();
 
@@ -64,7 +64,7 @@ public class ConnectionFactoryTest {
         mockedProps = Mockito.mock(Properties.class);
         Mockito.when(mockedProps.getProperty("connection.type")).thenReturn("blah-blah");
         try (MockedStatic<ConfigReader> mockedStatic = Mockito.mockStatic(ConfigReader.class)) {
-            mockedStatic.when(ConfigReader::loadProperties).thenReturn(mockedProps);
+            mockedStatic.when(ConfigReader::loadDefaultProperties).thenReturn(mockedProps);
 
             Assertions.assertThrows(RuntimeException.class, () -> new ConnectionFactory().createConnection());
         }
@@ -74,7 +74,7 @@ public class ConnectionFactoryTest {
     public void testNotConnectionCreatedForInvalidConfig() {
         mockedProps = Mockito.mock(Properties.class);
         try (MockedStatic<ConfigReader> mockedStatic = Mockito.mockStatic(ConfigReader.class)) {
-            mockedStatic.when(ConfigReader::loadProperties).thenReturn(mockedProps);
+            mockedStatic.when(ConfigReader::loadDefaultProperties).thenReturn(mockedProps);
 
             Assertions.assertThrows(RuntimeException.class, () -> new ConnectionFactory().createConnection());
 
